@@ -17,6 +17,6 @@ workflows:
           echo "ndkVersion = \"25.1.8937393\"" >> android/local.properties
           flutter pub get
       - name: Build APK
-        script: flutter build apk --debug --no-tree-shake-icons
+        script: flutter build apk --release --no-tree-shake-icons
     artifacts:
-      - build/app/outputs/flutter-apk/app-debug.apk
+      - build/app/outputs/flutter-apk/app-release.apk
