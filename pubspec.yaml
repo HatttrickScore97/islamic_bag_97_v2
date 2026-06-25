@@ -1,14 +1,32 @@
-name: islamic_bag_97
-description: الحقيبة الإسلامية 97
+name: islamic_bag
+description: "A new Flutter project for prayer times and quran."
+publish_to: 'none'
+
 version: 1.0.0+1
+
 environment:
   sdk: '>=3.0.0 <4.0.0'
+
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.6
-  quran: ^1.2.2
-  adhan_dart: ^1.2.0
+  
+  # مواقيت الصلاة - نسخة محدثة ومستقرة
+  adhan_dart: ^2.1.1
+  
+  # القرآن الكريم
+  quran: ^1.2.1
+  
+  # للتواريخ والوقت
   intl: ^0.19.0
+  
+  # تصميم الواجهة
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
 flutter:
   uses-material-design: true
