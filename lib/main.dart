@@ -12,10 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'مواقيت الصلاة',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-        fontFamily: 'Cairo',
-      ),
+      theme: ThemeData(primarySwatch: Colors.green),
       home: const PrayerTimesPage(),
       debugShowCheckedModeBanner: false,
     );
@@ -39,16 +36,10 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
   }
 
   void calculatePrayerTimes() {
-    // احداثيات بغداد - غيرها لمدينتك
     final coordinates = Coordinates(33.3152, 44.3661);
-
-    // طريقة الحساب: رابطة العالم الإسلامي
     final params = CalculationMethod.muslimWorldLeague().getParameters();
-    params.madhab = Madhab.shafi; // شافعي. اذا تريد حنفي: Madhab.hanafi
-
-    // حساب اوقات اليوم
+    params.madhab = Madhab.shafi;
     final prayerTimesToday = PrayerTimes.today(coordinates, params);
-
     setState(() {
       prayerTimes = prayerTimesToday;
     });
@@ -56,25 +47,14 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
 
   String formatTime(DateTime? time) {
     if (time == null) return '--:--';
-    final hour = time.hour.toString().padLeft(2, '0');
-    final minute = time.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
+    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
   }
 
   Widget buildPrayerCard(String name, DateTime? time) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      elevation: 4,
       child: ListTile(
-        leading: const Icon(Icons.mosque, color: Colors.green, size: 32),
-        title: Text(
-          name,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        trailing: Text(
-          formatTime(time),
-          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-        ),
+        title: Text(name, style: const TextStyle(fontSize: 20)),
+        trailing: Text(formatTime(time), style: const TextStyle(fontSize: 22)),
       ),
     );
   }
@@ -82,35 +62,18 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('مواقيت الصلاة - بغداد'),
-        centerTitle: true,
-        backgroundColor: Colors.green[700],
-      ),
+      appBar: AppBar(title: const Text('مواقيت الصلاة - بغداد')),
       body: prayerTimes == null
-         ? const Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-              onRefresh: () async {
-                calculatePrayerTimes();
-              },
-              child: ListView(
-                children: [
-                  const SizedBox(height: 16),
-                  buildPrayerCard('الفجر', prayerTimes!.fajr),
-                  buildPrayerCard('الشروق', prayerTimes!.sunrise),
-                  buildPrayerCard('الظهر', prayerTimes!.dhuhr),
-                  buildPrayerCard('العصر', prayerTimes!.asr),
-                  buildPrayerCard('المغرب', prayerTimes!.maghrib),
-                  buildPrayerCard('العشاء', prayerTimes!.isha),
-                  const SizedBox(height: 20),
-                  Center(
-                    child: Text(
-                      'اسحب للاسفل للتحديث',
-                      style: TextStyle(color: Colors.grey[600]),
-                    ),
-                  ),
-                ],
-              ),
+          ? const Center(child: CircularProgressIndicator())
+          : ListView(
+              children: [
+                buildPrayerCard('الفجر', prayerTimes!.fajr),
+                buildPrayerCard('الشروق', prayerTimes!.sunrise),
+                buildPrayerCard('الظهر', prayerTimes!.dhuhr),
+                buildPrayerCard('العصر', prayerTimes!.asr),
+                buildPrayerCard('المغرب', prayerTimes!.maghrib),
+                buildPrayerCard('العشاء', prayerTimes!.isha),
+              ],
             ),
     );
   }
