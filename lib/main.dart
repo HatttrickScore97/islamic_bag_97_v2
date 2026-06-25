@@ -1,157 +1,117 @@
- import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:adhan_dart/adhan_dart.dart';
-import 'package:quran/quran.dart' as quran;
-import 'package:intl/intl.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'الحقيبة الاسلامية 97',
-      theme: ThemeData(primarySwatch: Colors.green),
-      home: HomeScreen(),
+      title: 'مواقيت الصلاة',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+        fontFamily: 'Cairo',
+      ),
+      home: const PrayerTimesPage(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class HomeScreen extends StatefulWidget {
+class PrayerTimesPage extends StatefulWidget {
+  const PrayerTimesPage({super.key});
+
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<PrayerTimesPage> createState() => _PrayerTimesPageState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _PrayerTimesPageState extends State<PrayerTimesPage> {
   PrayerTimes? prayerTimes;
-  String currentSurah = '';
-  int currentVerse = 1;
 
   @override
   void initState() {
     super.initState();
     calculatePrayerTimes();
-    loadQuran();
   }
 
   void calculatePrayerTimes() {
-    final coordinates = Coordinates(33.3152, 44.3661); // بغداد
-    final params = CalculationMethod.muslimWorldLeague();
-    params.madhab = Madhab.shafi;
-    
-    final date = DateTime.now();
-    final dateComponents = DateComponents(date.year, date.month, date.day);
-    
-    setState(() {
-      prayerTimes = PrayerTimes(coordinates: coordinates, dateComponents: dateComponents, calculationParameters: params);
-    });
-  }
+    // احداثيات بغداد - غيرها لمدينتك
+    final coordinates = Coordinates(33.3152, 44.3661);
 
-  void loadQuran() {
+    // طريقة الحساب: رابطة العالم الإسلامي
+    final params = CalculationMethod.muslimWorldLeague().getParameters();
+    params.madhab = Madhab.shafi; // شافعي. اذا تريد حنفي: Madhab.hanafi
+
+    // حساب اوقات اليوم
+    final prayerTimesToday = PrayerTimes.today(coordinates, params);
+
     setState(() {
-      currentSurah = quran.getSurahNameArabic(1);
+      prayerTimes = prayerTimesToday;
     });
   }
 
   String formatTime(DateTime? time) {
     if (time == null) return '--:--';
-    return DateFormat('hh:mm a').format(time);
+    final hour = time.hour.toString().padLeft(2, '0');
+    final minute = time.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
+  }
+
+  Widget buildPrayerCard(String name, DateTime? time) {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      elevation: 4,
+      child: ListTile(
+        leading: const Icon(Icons.mosque, color: Colors.green, size: 32),
+        title: Text(
+          name,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        trailing: Text(
+          formatTime(time),
+          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('الحقيبة الاسلامية 97'),
+        title: const Text('مواقيت الصلاة - بغداد'),
         centerTitle: true,
+        backgroundColor: Colors.green[700],
       ),
       body: prayerTimes == null
-          ? Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+         ? const Center(child: CircularProgressIndicator())
+          : RefreshIndicator(
+              onRefresh: () async {
+                calculatePrayerTimes();
+              },
+              child: ListView(
                 children: [
-                  Card(
-                    child: Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          Text('مواقيت الصلاة - بغداد', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                          SizedBox(height: 16),
-                          PrayerTimeRow('الفجر', formatTime(prayerTimes!.fajr)),
-                          PrayerTimeRow('الشروق', formatTime(prayerTimes!.sunrise)),
-                          PrayerTimeRow('الظهر', formatTime(prayerTimes!.dhuhr)),
-                          PrayerTimeRow('العصر', formatTime(prayerTimes!.asr)),
-                          PrayerTimeRow('المغرب', formatTime(prayerTimes!.maghrib)),
-                          PrayerTimeRow('العشاء', formatTime(prayerTimes!.isha)),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Card(
-                    child: Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          Text('القرآن الكريم', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                          SizedBox(height: 16),
-                          Text('سورة $currentSurah', style: TextStyle(fontSize: 18)),
-                          SizedBox(height: 8),
-                          Text(
-                            quran.getVerse(1, currentVerse, verseEndSymbol: true),
-                            style: TextStyle(fontSize: 22, fontFamily: 'Amiri'),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: 16),
-                          Row(
- mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              ElevatedButton(
-                                onPressed: currentVerse > 1 ? () {
-                                  setState(() { currentVerse--; });
-                                } : null,
-                                child: Text('السابق'),
-                              ),
-                              ElevatedButton(
-                                onPressed: currentVerse < quran.getVerseCount(1) ? () {
-                                  setState(() { currentVerse++; });
-                                } : null,
-                                child: Text('التالي'),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                  const SizedBox(height: 16),
+                  buildPrayerCard('الفجر', prayerTimes!.fajr),
+                  buildPrayerCard('الشروق', prayerTimes!.sunrise),
+                  buildPrayerCard('الظهر', prayerTimes!.dhuhr),
+                  buildPrayerCard('العصر', prayerTimes!.asr),
+                  buildPrayerCard('المغرب', prayerTimes!.maghrib),
+                  buildPrayerCard('العشاء', prayerTimes!.isha),
+                  const SizedBox(height: 20),
+                  Center(
+                    child: Text(
+                      'اسحب للاسفل للتحديث',
+                      style: TextStyle(color: Colors.grey[600]),
                     ),
                   ),
                 ],
               ),
             ),
-    );
-  }
-}
-
-class PrayerTimeRow extends StatelessWidget {
-  final String name;
-  final String time;
-
-  PrayerTimeRow(this.name, this.time);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(name, style: TextStyle(fontSize: 18)),
-          Text(time, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        ],
-      ),
     );
   }
 }
