@@ -14,9 +14,6 @@ workflows:
           rm -rf lib
           mv lib_backup lib
           mv pubspec_backup.yaml pubspec.yaml
-      - name: Fix pubspec.yaml
-        script: |
-          sed -i 's/sdk: ">=2.19.0 <4.0.0"/sdk: ">=3.0.0 <4.0.0"/' pubspec.yaml
       - name: Get dependencies
         script: flutter pub get
       - name: Build APK
