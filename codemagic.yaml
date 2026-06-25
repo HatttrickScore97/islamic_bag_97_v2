@@ -11,11 +11,8 @@ workflows:
           rm -rf android ios web linux macos windows .dart_tool build
           flutter create --platforms=android --org com.islamicbag .
           flutter pub add firebase_core firebase_auth cloud_firestore audioplayers path_provider url_launcher intl share_plus
-          
-          # هذا السطر المهم: يرفع الـ minSdkVersion لـ 21
           sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/' android/app/build.gradle
           sed -i 's/compileSdkVersion flutter.compileSdkVersion/compileSdkVersion 34/' android/app/build.gradle
-          
           flutter pub get
       - name: Build debug APK
         script: |
