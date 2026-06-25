@@ -5,15 +5,16 @@ workflows:
       flutter: 3.22.2
       java: 17
     scripts:
-      - name: Backup and recreate project
+      - name: Force clean everything
         script: |
-          mv lib lib_backup
-          mv pubspec.yaml pubspec_backup.yaml
+          flutter clean
           rm -rf android ios
+          rm -f pubspec.lock
           flutter create --platforms=android .
+      - name: Restore your code
+        script: |
           rm -rf lib
-          mv lib_backup lib
-          mv pubspec_backup.yaml pubspec.yaml
+          git checkout HEAD -- lib pubspec.yaml
       - name: Get dependencies
         script: flutter pub get
       - name: Build APK
