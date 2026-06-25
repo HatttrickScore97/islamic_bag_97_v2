@@ -3,16 +3,19 @@ workflows:
     name: Default Workflow
     environment:
       flutter: 3.22.2
+      java: 17
     scripts:
       - name: Remove default deps step and fix project
         script: |
           flutter clean
-          rm -rf android ios web linux windows macos
+          rm -rf android ios web linux macos windows
           flutter create .
           flutter pub upgrade --major-versions
-          flutter pub get
+          cd android
+          ./gradlew wrapper --gradle-version=8.4 --distribution-type=all
+          cd ..
       - name: Build debug APK
         script: |
-          flutter build apk --debug --no-tree-shake-icons
+          flutter build apk --debug
     artifacts:
-      - build/app/outputs/flutter-apk/app-debug.apk
+      - build//outputs//*.apk
