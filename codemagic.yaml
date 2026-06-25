@@ -4,9 +4,10 @@ workflows:
     environment:
       flutter: 3.22.2
     scripts:
-      - name: Fix project before build
+      - name: Remove default deps step and fix project
         script: |
           flutter clean
+          rm -rf android ios web linux windows macos
           flutter create .
           flutter pub upgrade --major-versions
           flutter pub get
@@ -15,3 +16,4 @@ workflows:
           flutter build apk --debug --no-tree-shake-icons
     artifacts:
       - build/app/outputs/flutter-apk/app-debug.apk
+    dependency_installation: false
