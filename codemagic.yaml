@@ -2,14 +2,12 @@ workflows:
   default:
     name: Default Build
     environment:
-      flutter: 3.22.2
-      java: 17
+      flutter: 3.7.12
+      java: 11
     scripts:
-      - name: Clean project
-        script: flutter clean
       - name: Get dependencies
         script: flutter pub get
       - name: Build APK
-        script: flutter build apk --release --no-tree-shake-icons
+        script: flutter build apk --release
     artifacts:
       - build/app/outputs/flutter-apk/app-release.apk
