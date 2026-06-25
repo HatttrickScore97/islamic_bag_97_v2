@@ -2,20 +2,20 @@ workflows:
   default:
     name: Default Workflow
     environment:
-      flutter: 3.22.2
+      flutter: 3.24.5
+      xcode: latest
+      cocoapods: default
       java: 17
     scripts:
-      - name: Remove default deps step and fix project
+      - name: Clean and recreate project
         script: |
           flutter clean
-          rm -rf android ios web linux macos windows
-          flutter create .
-          flutter pub upgrade --major-versions
-          cd android
-          ./gradlew wrapper --gradle-version=8.4 --distribution-type=all
-          cd ..
+          rm -rf android ios web linux macos windows .dart_tool build
+          flutter create --platforms=android .
+          flutter pub add firebase_core firebase_auth cloud_firestore audioplayers path_provider url_launcher intl share_plus flutter_native_splash flutter_launcher_icons
+          flutter pub get
       - name: Build debug APK
         script: |
-          flutter build apk --debug
+          flutter build apk --debug --no-shrink
     artifacts:
-      - build//outputs//*.apk
+      - build/app/outputs/flutter-apk/app-debug.apk
