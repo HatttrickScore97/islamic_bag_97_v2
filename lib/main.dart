@@ -12,51 +12,34 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'مواقيت الصلاة',
-      theme: ThemeData(primarySwatch: Colors.green),
-      home: const PrayerTimesPage(),
+      home: const PrayerPage(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class PrayerTimesPage extends StatefulWidget {
-  const PrayerTimesPage({super.key});
+class PrayerPage extends StatefulWidget {
+  const PrayerPage({super.key});
 
   @override
-  State<PrayerTimesPage> createState() => _PrayerTimesPageState();
+  State<PrayerPage> createState() => _PrayerPageState();
 }
 
-class _PrayerTimesPageState extends State<PrayerTimesPage> {
+class _PrayerPageState extends State<PrayerPage> {
   PrayerTimes? prayerTimes;
 
   @override
   void initState() {
     super.initState();
-    calculatePrayerTimes();
-  }
-
-  void calculatePrayerTimes() {
     final coordinates = Coordinates(33.3152, 44.3661);
     final params = CalculationMethod.muslimWorldLeague().getParameters();
     params.madhab = Madhab.shafi;
-    final prayerTimesToday = PrayerTimes.today(coordinates, params);
-    setState(() {
-      prayerTimes = prayerTimesToday;
-    });
+    prayerTimes = PrayerTimes.today(coordinates, params);
   }
 
-  String formatTime(DateTime? time) {
-    if (time == null) return '--:--';
-    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-  }
-
-  Widget buildPrayerCard(String name, DateTime? time) {
-    return Card(
-      child: ListTile(
-        title: Text(name, style: const TextStyle(fontSize: 20)),
-        trailing: Text(formatTime(time), style: const TextStyle(fontSize: 22)),
-      ),
-    );
+  String format(DateTime? t) {
+    if (t == null) return '--:--';
+    return '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -66,13 +49,14 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
       body: prayerTimes == null
           ? const Center(child: CircularProgressIndicator())
           : ListView(
+              padding: const EdgeInsets.all(16),
               children: [
-                buildPrayerCard('الفجر', prayerTimes!.fajr),
-                buildPrayerCard('الشروق', prayerTimes!.sunrise),
-                buildPrayerCard('الظهر', prayerTimes!.dhuhr),
-                buildPrayerCard('العصر', prayerTimes!.asr),
-                buildPrayerCard('المغرب', prayerTimes!.maghrib),
-                buildPrayerCard('العشاء', prayerTimes!.isha),
+                ListTile(title: const Text('الفجر'), trailing: Text(format(prayerTimes!.fajr), style: const TextStyle(fontSize: 20))),
+                ListTile(title: const Text('الشروق'), trailing: Text(format(prayerTimes!.sunrise), style: const TextStyle(fontSize: 20))),
+                ListTile(title: const Text('الظهر'), trailing: Text(format(prayerTimes!.dhuhr), style: const TextStyle(fontSize: 20))),
+                ListTile(title: const Text('العصر'), trailing: Text(format(prayerTimes!.asr), style: const TextStyle(fontSize: 20))),
+                ListTile(title: const Text('المغرب'), trailing: Text(format(prayerTimes!.maghrib), style: const TextStyle(fontSize: 20))),
+                ListTile(title: const Text('العشاء'), trailing: Text(format(prayerTimes!.isha), style: const TextStyle(fontSize: 20))),
               ],
             ),
     );
