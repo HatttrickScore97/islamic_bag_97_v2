@@ -1,5 +1,5 @@
 workflows:
-  default-workflow:
+  default:
     name: Default Workflow
     environment:
       flutter: 3.22.2
@@ -16,4 +16,3 @@ workflows:
           flutter build apk --debug --no-tree-shake-icons
     artifacts:
       - build/app/outputs/flutter-apk/app-debug.apk
-    dependency_installation: false
