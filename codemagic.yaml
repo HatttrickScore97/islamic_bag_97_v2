@@ -3,16 +3,19 @@ workflows:
     name: Default Workflow
     environment:
       flutter: 3.24.5
-      xcode: latest
-      cocoapods: default
       java: 17
     scripts:
-      - name: Clean and recreate project
+      - name: Fix project + Set SDK versions
         script: |
           flutter clean
           rm -rf android ios web linux macos windows .dart_tool build
-          flutter create --platforms=android .
-          flutter pub add firebase_core firebase_auth cloud_firestore audioplayers path_provider url_launcher intl share_plus flutter_native_splash flutter_launcher_icons
+          flutter create --platforms=android --org com.islamicbag .
+          flutter pub add firebase_core firebase_auth cloud_firestore audioplayers path_provider url_launcher intl share_plus
+          
+          # هذا السطر المهم: يرفع الـ minSdkVersion لـ 21
+          sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/' android/app/build.gradle
+          sed -i 's/compileSdkVersion flutter.compileSdkVersion/compileSdkVersion 34/' android/app/build.gradle
+          
           flutter pub get
       - name: Build debug APK
         script: |
