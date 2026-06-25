@@ -1,21 +1,20 @@
 workflows:
-  default:
-    name: Default Workflow
+  android-workflow:
+    name: Android Workflow
     environment:
-      flutter: 3.24.5
+      flutter: 3.22.0
       java: 17
     scripts:
-      - name: Fix Android only
+      - name: Fix everything
         script: |
           flutter clean
-          rm -rf android
-          flutter create --platforms=android .
-          sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/' android/app/build.gradle
-          sed -i 's/compileSdkVersion flutter.compileSdkVersion/compileSdkVersion 34/' android/app/build.gradle
-          sed -i 's/targetSdkVersion flutter.targetSdkVersion/targetSdkVersion 34/' android/app/build.gradle
+          rm -rf android ios linux macos web windows
+          flutter create .
+          sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/g' android/app/build.gradle
+          sed -i 's/compileSdkVersion flutter.compileSdkVersion/compileSdkVersion 34/g' android/app/build.gradle
+          sed -i 's/targetSdkVersion flutter.targetSdkVersion/targetSdkVersion 34/g' android/app/build.gradle
           flutter pub get
-      - name: Build debug APK
-        script: |
-          flutter build apk --debug --no-shrink
+      - name: Build APK
+        script: flutter build apk --debug
     artifacts:
       - build/app/outputs/flutter-apk/app-debug.apk
