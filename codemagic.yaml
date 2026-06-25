@@ -2,8 +2,8 @@ workflows:
   default:
     name: Default Build
     environment:
-      flutter: 3.7.12
-      java: 11
+      flutter: 3.7.12   ← غيرته من 3.22.2
+      java: 11          ← غيرته من 17
     scripts:
       - name: Get dependencies
         script: flutter pub get
