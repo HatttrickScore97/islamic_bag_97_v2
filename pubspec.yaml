@@ -1,7 +1,6 @@
-name: islamic_bag
+name: islamic_bag_97
 description: "A new Flutter project for prayer times and quran."
 publish_to: 'none'
-
 version: 1.0.0+1
 
 environment:
@@ -10,18 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  
-  # مواقيت الصلاة - نسخة محدثة ومستقرة
-  adhan_dart: ^2.1.1
-  
-  # القرآن الكريم
+  cupertino_icons: ^1.0.6
+  adhan_dart: ^2.0.1
   quran: ^1.2.1
-  
-  # للتواريخ والوقت
   intl: ^0.19.0
-  
-  # تصميم الواجهة
-  cupertino_icons: ^1.0.8
 
 dev_dependencies:
   flutter_test:
