@@ -1,13 +1,17 @@
-workflows:
-  default:
-    name: Default Build
-    environment:
-      flutter: 3.19.6
-      java: 17
-    scripts:
-      - name: Get dependencies
-        script: flutter pub get
-      - name: Build APK
-        script: flutter build apk --release
-    artifacts:
-      - build/app/outputs/flutter-apk/app-release.apk
+name: islamic_bag_97
+description: تطبيق للصلاة 97
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  quran: ^1.2.1
+  adhan_dart: ^2.0.1
+  intl: ^0.19.0
+
+flutter:
+  uses-material-design: true
