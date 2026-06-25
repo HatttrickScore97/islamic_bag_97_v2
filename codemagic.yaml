@@ -5,14 +5,16 @@ workflows:
       flutter: 3.24.5
       java: 17
     scripts:
-      - name: Fix project + Set SDK versions
+      - name: Fix Android only
         script: |
           flutter clean
-          rm -rf android ios web linux macos windows .dart_tool build
-          flutter create --platforms=android --org com.islamicbag .
-          flutter pub add firebase_core firebase_auth cloud_firestore audioplayers path_provider url_launcher intl share_plus
+          rm -rf android
+          flutter create --platforms=android .
           sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/' android/app/build.gradle
           sed -i 's/compileSdkVersion flutter.compileSdkVersion/compileSdkVersion 34/' android/app/build.gradle
+          sed -i 's/targetSdkVersion flutter.targetSdkVersion/targetSdkVersion 34/' android/app/build.gradle
+          sed -i '/defaultConfig {/a \        multiDexEnabled true' android/app/build.gradle
+          sed -i '/android {/a \    buildFeatures {\n        buildConfig true\n    }' android/app/build.gradle
           flutter pub get
       - name: Build debug APK
         script: |
