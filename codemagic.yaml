@@ -13,8 +13,10 @@ workflows:
           sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/g' android/app/build.gradle
           sed -i 's/compileSdkVersion flutter.compileSdkVersion/compileSdkVersion 34/g' android/app/build.gradle
           sed -i 's/targetSdkVersion flutter.targetSdkVersion/targetSdkVersion 34/g' android/app/build.gradle
+          sed -i 's/ext.kotlin_version = .*/ext.kotlin_version = "1.9.0"/g' android/settings.gradle
+          echo "ndkVersion = \"25.1.8937393\"" >> android/local.properties
           flutter pub get
       - name: Build APK
-        script: flutter build apk --debug
+        script: flutter build apk --debug --no-tree-shake-icons
     artifacts:
       - build/app/outputs/flutter-apk/app-debug.apk
