@@ -8,13 +8,16 @@ workflows:
       - name: Force clean everything
         script: |
           flutter clean
-          rm -rf android ios
           rm -f pubspec.lock
-          flutter create --platforms=android .
-      - name: Restore your code
+      - name: Backup and recreate project
         script: |
+          cp -r lib lib_backup
+          cp pubspec.yaml pubspec_backup.yaml
+          rm -rf android ios lib
+          flutter create --platforms=android .
           rm -rf lib
-          git checkout HEAD -- lib pubspec.yaml
+          mv lib_backup lib
+          mv pubspec_backup.yaml pubspec.yaml
       - name: Get dependencies
         script: flutter pub get
       - name: Build APK
