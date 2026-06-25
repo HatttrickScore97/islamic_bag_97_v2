@@ -2,21 +2,12 @@ workflows:
   default:
     name: Default Build
     environment:
-      flutter: 3.22.0
+      flutter: 3.19.6
       java: 17
     scripts:
-      - name: Fix Android Project
-        script: |
-          flutter clean
-          rm -rf android ios linux macos web windows
-          flutter create .
-          sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/g' android/app/build.gradle
-          sed -i 's/compileSdkVersion flutter.compileSdkVersion/compileSdkVersion 34/g' android/app/build.gradle
-          sed -i 's/targetSdkVersion flutter.targetSdkVersion/targetSdkVersion 34/g' android/app/build.gradle
-          echo "ndkVersion = \"25.1.8937393\"" >> android/local.properties
-          echo "org.gradle.jvmargs=-Xmx4G" >> android/gradle.properties
-          flutter pub get
+      - name: Get dependencies
+        script: flutter pub get
       - name: Build APK
-        script: flutter build apk --release --no-tree-shake-icons
+        script: flutter build apk --release
     artifacts:
       - build/app/outputs/flutter-apk/app-release.apk
