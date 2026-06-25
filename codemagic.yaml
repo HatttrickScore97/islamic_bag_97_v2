@@ -13,8 +13,6 @@ workflows:
           sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/' android/app/build.gradle
           sed -i 's/compileSdkVersion flutter.compileSdkVersion/compileSdkVersion 34/' android/app/build.gradle
           sed -i 's/targetSdkVersion flutter.targetSdkVersion/targetSdkVersion 34/' android/app/build.gradle
-          sed -i '/defaultConfig {/a \        multiDexEnabled true' android/app/build.gradle
-          sed -i '/android {/a \    buildFeatures {\n        buildConfig true\n    }' android/app/build.gradle
           flutter pub get
       - name: Build debug APK
         script: |
