@@ -1,11 +1,11 @@
 workflows:
-  android-workflow:
-    name: Android Workflow
+  default:
+    name: Default Build
     environment:
       flutter: 3.22.0
       java: 17
     scripts:
-      - name: Fix everything
+      - name: Fix Android Project
         script: |
           flutter clean
           rm -rf android ios linux macos web windows
